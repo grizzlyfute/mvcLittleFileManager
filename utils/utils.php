@@ -535,6 +535,34 @@ function utils_getTextExtraMimes()
 }
 
 /**
+ * Get files size
+ */
+function utils_foldersize($path, $limitSize = 0x7FFFFFFF)
+{
+    $totalSize = 0;
+	$path = utils_cleanPath($path);
+
+	if (!is_dir($path))
+	{
+		$totalSize += filesize($path);
+	}
+	else
+	{
+	    $files = scandir($path);
+
+		foreach($files as $name)
+		{
+			if ($totalSize > $limitSize) break;
+			if ($name == '.' || $name == '..') continue;
+
+			$totalSize += utils_foldersize ($path . DIRECTORY_SEPARATOR . $name, $limitSize - $totalSize);
+		}
+	}
+
+    return $totalSize;
+}
+
+/**
  * Get mime type
  * @param string $file_path
  * @return mixed|string
@@ -598,6 +626,46 @@ function utils_isPathIncludeInto($root, $child, $notMatchingIfSame = false)
 		$notMatchingIfSame = ($root == $child);
 	}
 	return !$notMatchingIfSame && substr($child, 0, strlen($root)) == $root;
+}
+
+/**
+ * Get recursive folder size
+ * limitSize is used to stop if size reach the limit, avoiding uselss computation
+ * knownInodes avoid recursive link loop
+ */
+function utils_folderSize($path, int $limitSize = 0x7FFFFFFF, array &$knownInodes = array())
+{
+    $totalSize = 0;
+	$path = utils_convertPathToSys($path);
+
+	$inode = fileinode (realpath($path));
+	if ($inode && in_array($inode, $knownInodes))
+	{
+		$inode = false;
+	}
+	elseif (!is_dir($path))
+	{
+		$totalSize += filesize($path);
+		$knownInodes[] = $inode;
+	}
+	else
+	{
+	    $files = scandir($path);
+
+		foreach($files as $name)
+		{
+			if ($totalSize > $limitSize) break;
+			if ($name == '.' || $name == '..') continue;
+
+			$totalSize += utils_folderSize ($path . DIRECTORY_SEPARATOR . $name, $limitSize - $totalSize, $knownInodes);
+		}
+	}
+
+	if ($inode)
+	{
+		$knownInodes[] = $inode;
+	}
+    return $totalSize;
 }
 
 ?>

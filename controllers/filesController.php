@@ -697,13 +697,12 @@ class FilesController extends BaseController
 				break;
 
 			case 'compress':
-				// $$$$ Todo: check final size before zip to avoid DOS attacks
 				if (isset($_REQUEST['fileAction']))
 				{
 					if (isset ($_REQUEST['compressAction']))
 					{
 						$dstPath = addExtForArchive($_REQUEST['compressAction'], $dstPath);
-						$ret &= packFiles($srcPathes, $dstPath, $this->getRealPath($parent), $err);
+						$ret &= packFiles($srcPathes, $dstPath, $this->getRealPath($parent), $err, $CONFIG['max_size_to_compress']);
 					}
 					else
 					{
@@ -750,7 +749,7 @@ class FilesController extends BaseController
 				}
 				else
 				{
-					$ret &= packFiles($srcPathes, $tmpName, $this->getRealPath($parent), $err);
+					$ret &= packFiles($srcPathes, $tmpName, $this->getRealPath($parent), $err, $CONFIG['max_size_to_compress']);
 					if ($ret)
 					{
 						try
@@ -1092,7 +1091,7 @@ class FilesController extends BaseController
 		{
 			$temp_file = tempnam($CONFIG['tmppath'], basename($syspath) . '_') . '.zip';
 			$err = '';
-			if (!packFiles(array($syspath), $temp_file,  $this->getRealPath($this->getParent($path)), $err))
+			if (!packFiles(array($syspath), $temp_file,  $this->getRealPath($this->getParent($path)), $err, $CONFIG['max_size_to_compress']))
 			{
 				$this->setMessage('Can not pack "' . $path . '"' . $err . ' ' .
 				$this->getDetailedError(), 'error');

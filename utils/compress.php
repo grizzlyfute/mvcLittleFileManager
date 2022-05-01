@@ -71,6 +71,8 @@ abstract class ACompressor implements ICompressor
 	public abstract function compress(): bool;
 	public abstract function extractTo(string $path): bool;
 
+	private $knownInodes = array();
+
 	private $errorMessage = '';
 	public function getErrorMessage(): string
 	{
@@ -85,33 +87,47 @@ abstract class ACompressor implements ICompressor
 	public function addRec(string $path): bool
 	{
 		$ret = true;
-		if (is_dir($path))
+		$inode = fileinode (realpath($path));
+		if ($inode && in_array($inode, $this->knownInodes))
+		{
+			$inode = false;
+		}
+		else if (is_dir($path))
 		{
 			$objects = scandir($path);
 			if (is_array($objects))
 			{
-				foreach ($objects as $filename)
-				{
-					if ($filename == '.' || $filename == '..') continue;
-					$ret &= $this->addEmptyDir($path . DIRECTORY_SEPARATOR . $filename);
-					$ret &= $this->addRec($path . DIRECTORY_SEPARATOR . $filename);
-					if (!$ret) break;
-				}
+				$ret &= $this->addEmptyDir($path);
 			}
 			else
 			{
 				$this->setErrorMessage('Can not scan dir ' . $path);
 				$ret = false;
 			}
+			if ($ret)
+			{
+				foreach ($objects as $filename)
+				{
+					if ($filename == '.' || $filename == '..') continue;
+					$ret &= $this->addRec($path . DIRECTORY_SEPARATOR . $filename, $this->knownInodes);
+					if (!$ret) break;
+				}
+			}
 		}
 		else if (is_file($path))
 		{
 			$ret = $this->addFile($path);
+			$this->knownInodes[] = $inode;
 		}
 		else
 		{
 			$this->setErrorMessage('Unknown file type ' . $path);
 			$ret = false;
+		}
+
+		if ($inode)
+		{
+			$this->knownInodes[] = $inode;
 		}
 
 		return $ret;
@@ -358,7 +374,7 @@ function addExtForArchive (string $archivecmd, string $path): string
 	return $path;
 }
 
-function packFiles(array $files, string $dstPath, string $parent, string &$err): bool
+function packFiles(array $files, string $dstPath, string $parent, string &$err, int $maxSizeToCompress): bool
 {
 	if (empty ($files))
 	{
@@ -376,6 +392,18 @@ function packFiles(array $files, string $dstPath, string $parent, string &$err):
 	$compressor = null;
 	try
 	{
+		// check files size
+		$sizeToCompress = 0;
+		foreach ($files as $file)
+		{
+			$sizeToCompress += utils_folderSize($file, $maxSizeToCompress);
+			if ($sizeToCompress > $maxSizeToCompress)
+			{
+				die();
+				throw new \Exception ("Too big file set to compress");
+			}
+		}
+
 		$compressor = CompressorFactory::createCompressor($dstPath);
 		$parentlen = strlen($parent) + 1;
 		foreach ($files as $file)

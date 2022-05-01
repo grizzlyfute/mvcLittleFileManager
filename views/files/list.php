@@ -765,7 +765,7 @@ if ($perm->isGranted(Permission::SHOWSYSINFO, null))
 
 <div class="row">
 	<div class="col-xs-12 col-sm-9">
-		<ul class="list-inline footer-action">
+		<ul class="list-inline footer-action m-2">
 			<!-- common section -->
 			<li class="list-inline-item">
 				<a href="#" class="btn btn-small btn-outline-primary btn-2" onclick="select_all();return false;">
@@ -793,7 +793,7 @@ if ($perm->isGranted(Permission::SHOWSYSINFO, null))
 			<?php endif; ?>
 		</ul>
 		<?php if ($perm->isGranted(Permission::MODIFY, $path)): ?>
-		<ul class="list-inline footer-action">
+		<ul class="list-inline footer-action m-2">
 			<li class="list-inline-item" id="multipleCopy" style="display:none">
 				<a href="#" data-bs-toggle="modal" data-bs-target="#fileActionModal"
 				   class="btn btn-small btn-outline-primary btn-2"
