@@ -728,7 +728,6 @@ class FilesController extends BaseController
 				break;
 
 			case 'downloadzip':
-				// $$$$ Todo: check final size before zip to avoid DOS attacks
 				$tmpName = null;
 				$cnt = count ($srcPathes);
 				$prefix = $this->dateFormat(time()) . '_';
@@ -1077,6 +1076,7 @@ class FilesController extends BaseController
 	public function downloadAction()
 	{
 		global $CONFIG;
+		$parent = $this->getPath('parent');
 		$path = $this->getPath();
 		if (!$this->getPermissions()->isGranted(Permission::VIEW, $path))
 		{
@@ -1093,8 +1093,9 @@ class FilesController extends BaseController
 			$err = '';
 			if (!packFiles(array($syspath), $temp_file,  $this->getRealPath($this->getParent($path)), $err, $CONFIG['max_size_to_compress']))
 			{
-				$this->setMessage('Can not pack "' . $path . '"' . $err . ' ' .
-				$this->getDetailedError(), 'error');
+				$this->setMessage('Can not pack "' . $path . '" ' . $err . ' ' .
+				  	$this->getDetailedError(), 'error');
+				$this->redirect('?action=ls&p=' . rawurlencode($parent));
 			}
 			else
 			{

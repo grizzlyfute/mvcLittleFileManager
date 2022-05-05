@@ -694,12 +694,10 @@ foreach ($VIEWVARS['items'] as $item)
 								<i class="fas fa-external-link-square-alt"></i>&nbsp;<?php $tr->trans('file.extract') ?>
 							</a></li>
 							<?php endif; ?>
-							<?php if (!$item->getIsDir()): ?>
 							<li><a href="?action=download&p=<?php echo rawurlencode($item->getFullPath()) ?>&dlf"
 								class="dropdown-item">
 								<i class="fas fa-download"></i>&nbsp;<?php $tr->trans('file.download') ?>
 							</a></li>
-							<?php endif; ?>
 						</ul>
 					</div>
 					<?php else: ?>

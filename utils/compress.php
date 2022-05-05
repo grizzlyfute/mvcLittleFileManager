@@ -399,8 +399,7 @@ function packFiles(array $files, string $dstPath, string $parent, string &$err, 
 			$sizeToCompress += utils_folderSize($file, $maxSizeToCompress);
 			if ($sizeToCompress > $maxSizeToCompress)
 			{
-				die();
-				throw new \Exception ("Too big file set to compress");
+				throw new \Exception ("Too big files to compress");
 			}
 		}
 
@@ -441,7 +440,6 @@ function packFiles(array $files, string $dstPath, string $parent, string &$err, 
 			$compressor->dispose();
 		}
 	}
-
 	return $ret;
 }
 
