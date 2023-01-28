@@ -56,7 +56,7 @@ No database
    You could be interested to set up a temporary directory and a data stored
 	mkdir ~/mvcLittleFilesManager_data
 	mkdir ~/mvcLittleFilesManager_data/share # put your files here
-	mkdir ~/mvcLittleFilesManager_data/tmp # if you want onther temporary directory
+	mkdir ~/mvcLittleFilesManager_data/tmp # if you want another temporary directory
    directory here
 4. Ensure the http-user (*www-data*) have read and write permission on this
    directory. Do a chmod as necessary.
@@ -72,7 +72,7 @@ No database
 Note that your files *should* not be accessible thought the http server.
 
 # Configuration
-With your navigator, pointe to the url related to the server .htaccess
+With your navigator, pointe to the URL related to the server .htaccess
 	browser http://localhost/~user/mvcLittleFilesManager
 
 Choose configurations as you need.
@@ -90,8 +90,8 @@ a not owned directory. If you need to change it, please edit the file
 Select the default server timezone. This can be customized by user.
 
 #### Debug mode
-If checked, error message will also display the stacktrace of php. This option
-is useful in "*developper*" mode, but can share unwanted information for an
+If checked, error message will also display the stack trace of php. This option
+is useful in "*developer*" mode, but can share unwanted information for an
 attacker. If unsure, set it to false.
 
 #### Date format
@@ -101,7 +101,7 @@ The default date format. Could be customized by user.
 Choose application language. Current language available are en, fr.
 More language could be available, but I do not trust google translation.
 If you want to your own translation, create a file in trans directory.
-In controllers/configurationController.php, update available language.
+In controllers/configuration/Controller.php, update available language.
 
 #### Highlight js style
 Change style for code display. Note: this note impact the text editor
@@ -134,12 +134,6 @@ would be hidden.
 #### Remember me timestamp (s)
 This options define the time in second of the remember me feature, available on
 the login page. Do not take care if Use authentification disabled.
-
-#### Self url
-Define the server url. You should not have to use this option unless you encours
-difficulty to take the server name and server root path. Defined self url may be
-usefull in some (rare) proxy situation.
-In doubt, lets it empty.
 
 #### Temporary directory
 The the directory used as temporary directory. This will be used for heavy
@@ -242,13 +236,13 @@ Each new text requiere a new translation. Think before adding new text.
 New design, more user friendly will be welcome.
 
 # TODO
-* remove offline viewer
-* add jocker `*` and `**/*` to exlude item option
-* self url : should be deleted ?:
-* config: thumbnail directory
+* Add version number
+* Remove offline viewer
+* Add jocker `*` and `**/*` to exlude item option
+* Config: thumbnail directory
 * compression: avoid DOS
 * Disabling user authentfication : only for the admin
 * Chek user root directory
-* toolstips on setings
-* user password expiration
+* Toolstrips on setings
+* User password expiration
 * Unit Tests
