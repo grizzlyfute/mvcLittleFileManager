@@ -1,0 +1,35 @@
+# Deny access to .htaccess
+#Order deny,allow
+#Deny from all
+
+<Files .htaccess>
+	Order allow,deny
+	Deny from all
+</Files>
+
+<FilesMatch "^(libs/.*|style.css|logo.png|favicon.png|index.php)$">
+	Order allow,deny
+	Allow from all
+</FilesMatch>
+
+# cache-control
+<IfModule mod_expires.c>
+	ExpiresActive On
+	ExpiresDefault "access plus 1 month"
+</IfModule>
+
+<IfModule mod_headers.c>
+	<FilesMatch "^libs/.*$">
+		Header set Cache-Control "max-age=604800, public"
+	</FilesMatch>
+
+	<FilesMatch "\\.(x?html?|php)$">
+		Header set Cache-Control "max-age=600, private, must-revalidate"
+	</FilesMatch>
+</IfModule>
+
+# php specific configuration
+php_value upload_max_filesize 20M
+php_value post_max_size 20M
+php_value max_execution_time 2000
+php_value max_input_time 2000

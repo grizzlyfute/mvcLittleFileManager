@@ -621,14 +621,14 @@ class FilesController extends BaseController
 			if (substr ($dstPath, 0, 1) == '/')
 				$dstPath = $userRootPath . $dstPath;
 			else
-				$dstPath = $parent . '/' . $dstPath;
+				$dstPath = $parent . DIRECTORY_SEPARATOR . $dstPath;
 			$dstPath = utils_cleanPath($dstPath);
 			if (!$this->getPermissions()->isGranted(Permission::MODIFY, $dstPath))
 			{
 				throw new ForbiddenException('Access denied');
 			}
 			// no GetRealPath because dest not exists yet
-			$dstPath = $CONFIG['rootdirectory'] . DIRECTORY_SEPARATOR . utils_convertPathToSys($dstPath);
+			$dstPath = $CONFIG['rootdirectory'] . utils_convertPathToSys($dstPath);
 		}
 
 		$ret = true;
@@ -983,39 +983,79 @@ class FilesController extends BaseController
 		}
 		$extratorFn = null;
 		$writerFn = null;
+		// see https://www.php.net/manual/en/function.exif-imagetype.php
 		switch ($type)
 		{
-			case IMG_BMP:
-				$extratorFn = 'imagecreatefrombmp';
-				$writerFn = 'imagebmp';
-				break;
-			case IMG_GIF:
+			case IMAGETYPE_GIF: // 1
 				$extractorFn = 'imagecreatefromgif';
 				$writerFn = 'imagegif';
 				break;
-			case IMG_JPG:
-				//IMG_JPEG:
+
+			case IMAGETYPE_JPEG: // 2
 				$extractorFn = 'imagecreatefromjpeg';
 				$writerFn = 'imagejpeg';
 				break;
-			case IMG_PNG:
+
+			case IMAGETYPE_PNG: // 3
 				$extractorFn = 'imagecreatefrompng';
 				$writerFn = 'imagepng';
 				break;
-			case IMG_WBMP:
+
+			// case IMAGETYPE_SWF: // 4
+			//	break;
+
+			// case IMAGETYPE_PSD: // 5
+			//	break;
+
+			case IMAGETYPE_BMP: // 6
+				$extratorFn = 'imagecreatefrombmp';
+				$writerFn = 'imagebmp';
+				break;
+
+			// case IMAGETYPE_TIFF_II: // 7 (intel byte order)
+			//	break;
+
+			// case IMAGETYPE_TIFF_MM: // 8 (motorola byte order)
+			//	break;
+
+			// case IMAGETYPE_JPC: // 9
+			//	break;
+
+			// case IMAGETYPE_JP2: // 10
+			//	break;
+
+			// case IMAGETYPE_JPX: // 11
+			//	break;
+
+			// case IMAGETYPE_JB2: // 12
+			//	break;
+
+			// case IMAGETYPE_SWC: // 13
+			//	break;
+
+			// case IMAGETYPE_IFF: // 14
+			//	break;
+
+			case IMAGETYPE_WBMP: // 15
 				$extractorFn = 'imagecreatefromwbmp';
 				$writerFn = 'imagewbmp';
 				break;
-			case IMG_XPM:
+
+			case IMAGETYPE_XBM: // 16
 				$extractorFn = 'imagecreatefromxpm';
 				$writerFn = 'imagexpm';
 				break;
-			case IMG_WEBP:
+
+			// case IMAGETYPE_ICO: // 17
+			//	break;
+
+			case IMAGETYPE_WEBP: // 18
 				$extractorFn = 'imagecreatefromwebp';
 				$writerFn = 'imagewebp';
 				break;
+
 			default:
-				$err = 'Invalid image';
+				$err = 'Invalid image type ' . $type;
 				goto end;
 				break;
 		}
@@ -1066,6 +1106,7 @@ class FilesController extends BaseController
 		{
 			//$this->serveFile($syspath, false);
 			$this->setMessage($err, 'error');
+			echo '<pre>Error: ' . $err . '</pre><br/>';
 		}
 		else
 		{

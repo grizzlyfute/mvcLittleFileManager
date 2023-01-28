@@ -24,7 +24,15 @@ class Permission
 
 	public static function getPossiblePermissions(): array
 	{
-		return array (self::ADMIN, self::MODIFY, self::CHANGEPERMS, self::SHOWSYSINFO, self::USERS, self::PREFERENCES);
+		return array
+		(
+			self::ADMIN,
+			self::MODIFY,
+			self::CHANGEPERMS,
+			self::SHOWSYSINFO,
+			self::USERS,
+			self::PREFERENCES,
+		);
 	}
 
 	public function isGranted($perm, $arg): bool

@@ -22,6 +22,13 @@ class User extends SerializableEntity
 		$this->setDateFormat($CONFIG['dateformat']);
 	}
 
+	public function getLogin() : string
+	{
+		$username = ($this->getUserName());
+		if ($username === null) return null;
+		else return strtolower($username);
+	}
+
 	public function getUserName() : string
 	{
 		return $this->getValue('username');

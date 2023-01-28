@@ -47,7 +47,7 @@ foreach ($VIEWVARS['arrayobject'] as $name => $value)
 			<label class="form-label" for="<?php echo $name ?>"><?php $tr->trans('setting.' . $name) ?></label>
 		</div>
 		<div class="col-8">
-			<input class="form-control" name="<?php echo $name ?>" type="password" <?php echo $ro?>/>
+			<input class="form-control rounded-3" name="<?php echo $name ?>" type="password" <?php echo $ro?>/>
 		</div>
 	</div>
 	<div class="form-text row">
@@ -55,7 +55,7 @@ foreach ($VIEWVARS['arrayobject'] as $name => $value)
 			<label class="form-label" for="<?php echo $name ?>"><?php $tr->trans('setting.confirmpassword') ?></label>
 		</div>
 		<div class="col-8">
-			<input class="form-control" name="<?php echo $name ?>confirm" type="password" <?php echo $ro?>/>
+			<input class="form-control rounded-3" name="<?php echo $name ?>confirm" type="password" <?php echo $ro?>/>
 		</div>
 	<div>
 	<?php elseif ($type == 'boolean'): ?>
@@ -66,7 +66,7 @@ foreach ($VIEWVARS['arrayobject'] as $name => $value)
 		<div class="col-8">
 			<div class="form-check form-switch">
 				<input id="default_<?php echo $name ?>" type="hidden" name="<?php echo $name ?>" value="off"/><?php /* if checkbox is unchecked. Both send to the server */?>
-				<input class="form-check-input" name="<?php echo $name ?>" type="checkbox" <?php echo($value ? 'checked' : '')?>
+				<input class="form-check-input rounded-pill mt-2" name="<?php echo $name ?>" type="checkbox" <?php echo($value ? 'checked' : '')?>
 						onchange="onCheckboxChanged(this)" <?php echo $ro?>/>
 				<label class="form-check-label" for="<?php echo $name ?>"></label>
 			</div>
@@ -78,7 +78,7 @@ foreach ($VIEWVARS['arrayobject'] as $name => $value)
 			<label class="form-label" for="<?php echo $name ?>"><?php $tr->trans('setting.' . $name) ?></label>
 		</div>
 		<div class="col-8">
-			<input class="form-control" name="<?php echo $name ?>" type="number" step="1" value="<?php echo $value ?>" <?php echo $ro?>/>
+			<input class="form-control rounded-3" name="<?php echo $name ?>" type="number" step="1" value="<?php echo $value ?>" <?php echo $ro?>/>
 		</div>
 	</div>
 	<?php elseif ($type == 'double'): ?>
@@ -87,7 +87,7 @@ foreach ($VIEWVARS['arrayobject'] as $name => $value)
 			<label class="form-label" for="<?php echo $name ?>"><?php $tr->trans('setting.' . $name) ?></label>
 		</div>
 		<div class="col-8">
-			<input class="form-control" name="<?php echo $name ?>" type="number" step="0.001" value="<?php echo $value ?>" <?php echo $ro?>/>;
+			<input class="form-control rounded-3" name="<?php echo $name ?>" type="number" step="0.001" value="<?php echo $value ?>" <?php echo $ro?>/>;
 		</div>
 	</div>
 	<?php elseif ($type == 'string' || $type == 'NULL'): ?>
@@ -97,15 +97,25 @@ foreach ($VIEWVARS['arrayobject'] as $name => $value)
 		</div>
 		<div class="col-8">
 			<?php if (array_key_exists($name, $VIEWVARS['possiblesvalues'])): ?>
-			<select class="form-select" name="<?php echo $name ?>" <?php echo $ro?>>
-			<?php foreach ($VIEWVARS['possiblesvalues'][$name] as $option)
+			<select class="form-select rounded-3" name="<?php echo $name ?>" <?php echo $ro?>>
+			<?php
+			$options = $VIEWVARS['possiblesvalues'][$name];
+			$isSequential = !empty($options) && isset($options[0]);
+			foreach ($options as $opt_key => $opt_val)
 			{
-				echo '<option value="' . $option . '"' . ($option == $value ? ' selected' : '') . '>' . $option . '</option>' . PHP_EOL;
+				if ($isSequential)
+				{
+					echo '<option value="' . $opt_val . '"' . ($opt_val == $value ? ' selected' : '') . '>' . $opt_val . '</option>' . PHP_EOL;
+				}
+				else
+				{
+					echo '<option value="' . $opt_key . '"' . ($opt_key == $value ? ' selected' : '') . '>' . $opt_val . '</option>' . PHP_EOL;
+				}
 			}
 			?>
 			</select>
 			<?php else: ?>
-			<input class="form-control" name="<?php echo $name ?>" type="text" value="<?php echo $value ?>" <?php echo $ro?>/>
+			<input class="form-control rounded-3" name="<?php echo $name ?>" type="text" value="<?php echo $value ?>" <?php echo $ro?>/>
 			<?php endif; ?>
 		</div>
 	</div>
@@ -117,7 +127,7 @@ foreach ($VIEWVARS['arrayobject'] as $name => $value)
 		<div class="col-8">
 			<?php if (array_key_exists($name, $VIEWVARS['possiblesvalues'])): ?>
 			<input type="hidden" name="<?php echo $name ?>[]" value=""/>
-			<select class="form-select rounded" name="<?php echo $name ?>[]" multiple <?php echo $ro?>>
+			<select class="form-select rounded-3" name="<?php echo $name ?>[]" multiple <?php echo $ro?>>
 			<?php foreach ($VIEWVARS['possiblesvalues'][$name] as $option)
 			{
 				echo '<option value="' . $option . '"' . (in_array($option, $value) ? ' selected' : '') . '>' . $option . '</option>' . PHP_EOL;
@@ -125,7 +135,7 @@ foreach ($VIEWVARS['arrayobject'] as $name => $value)
 			?>
 			</select>
 			<?php else: ?>
-			<input class="form-control" name="<?php echo $name ?>" type="text" value="<?php echo implode(',', $value)?>" title="use ',' as separator"/>
+			<input class="form-control rounded-3" name="<?php echo $name ?>" type="text" value="<?php echo implode(',', $value)?>" title="use ',' as separator"/>
 			<?php endif; ?>
 		</div>
 	</div>
@@ -135,7 +145,7 @@ foreach ($VIEWVARS['arrayobject'] as $name => $value)
 			<label class="form-label" for="<?php echo $name ?>"><?php $tr->trans('setting.' . $name) ?></label>
 		</div>
 		<div class="col-sm-5">
-			<input class="form-control" name="<?php echo $name ?>" type="text" value="<?php echo json_encode($value) ?>" <?php echo $ro?>/>
+			<input class="form-control rounded-3" name="<?php echo $name ?>" type="text" value="<?php echo json_encode($value) ?>" <?php echo $ro?>/>
 		</div>
 	</div>
 	<?php else: ?>
@@ -150,10 +160,10 @@ foreach ($VIEWVARS['arrayobject'] as $name => $value)
 				<div class="mt-2 form-group row">
 					<div class="col">
 						<div class="float-end">
-						<button type="button" class="btn btn-secondary" onclick="history.back()">
-							<i class="fas fa-times-circle"></i>&nbsp;<?php $tr->trans('common.cancel') ?>
+						<button type="button" class="btn btn-secondary rounded-2" onclick="history.back()">
+							<i class="fas fa-times-circle"></i>&nbsp;<?php $tr->trans('common.back') ?>
 						</button>
-						<button type="submit" class="btn btn-success">
+						<button type="submit" class="btn btn-success rounded-2">
 							<i class="fas fa-check-circle"></i>&nbsp;<?php $tr->trans('common.ok')?>
 						</button>
 						</div>

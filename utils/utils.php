@@ -535,34 +535,6 @@ function utils_getTextExtraMimes()
 }
 
 /**
- * Get files size
- */
-function utils_foldersize($path, $limitSize = 0x7FFFFFFF)
-{
-    $totalSize = 0;
-	$path = utils_cleanPath($path);
-
-	if (!is_dir($path))
-	{
-		$totalSize += filesize($path);
-	}
-	else
-	{
-	    $files = scandir($path);
-
-		foreach($files as $name)
-		{
-			if ($totalSize > $limitSize) break;
-			if ($name == '.' || $name == '..') continue;
-
-			$totalSize += utils_foldersize ($path . DIRECTORY_SEPARATOR . $name, $limitSize - $totalSize);
-		}
-	}
-
-    return $totalSize;
-}
-
-/**
  * Get mime type
  * @param string $file_path
  * @return mixed|string

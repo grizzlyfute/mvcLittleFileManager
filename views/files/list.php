@@ -25,6 +25,7 @@ function fileActionPreparePre(filepath, action)
 	if (fpSplit.length == 1) suggestName = fpSplit[0];
 	else suggestName = fpSplit.pop().replace(/\..+$/, "");
 	suggestName = suggestName.replace(re, "");
+	suggestName = suggestName.split('/').reverse()[0];
 
 	$("#fileActionSrcPath").val(filepath);
 	$("#fileAction").val(action);
@@ -745,10 +746,10 @@ if ($perm->isGranted(Permission::SHOWSYSINFO, null))
 					$mem_usage_size = @memory_get_usage(true);
 					$tr->trans('file.memory');
 					printf (': <span title="%ld bytes" class="meminfo badge bg-light text-dark">%s</span>' . PHP_EOL, $mem_usage_size, utils_getFileSizeSuffix($mem_usage_size));
-					$free_disk_size = @disk_free_space($path);
+					$free_disk_size = @disk_free_space($CONFIG['rootdirectory'] . DIRECTORY_SEPARATOR . $path);
 					$tr->trans('file.freedisk');
 					printf (': <span title="%ld bytes" class="meminfo badge bg-light text-dark">%s</span>' . PHP_EOL, $free_disk_size, utils_getFileSizeSuffix($free_disk_size));
-					$partition_disk_size = @disk_total_space($path);
+					$partition_disk_size = @disk_total_space($CONFIG['rootdirectory'] . DIRECTORY_SEPARATOR . $path);
 					$tr->trans('file.partitionsize');
 					printf (': <span title="%ld bytes" class="meminfo badge bg-light text-dark">%s</span>' . PHP_EOL, $partition_disk_size, utils_getFileSizeSuffix($partition_disk_size));
 				?>
@@ -766,24 +767,24 @@ if ($perm->isGranted(Permission::SHOWSYSINFO, null))
 		<ul class="list-inline footer-action m-2">
 			<!-- common section -->
 			<li class="list-inline-item">
-				<a href="#" class="btn btn-small btn-outline-primary btn-2" onclick="select_all();return false;">
+				<a href="#" class="btn btn-small btn-outline-primary btn-2 rounded-2" onclick="select_all();return false;">
 					<i class="fas fa-check-square"></i>&nbsp;<?php $tr->trans('file.selectall') ?>
 				</a>
 			</li>
-			<li class="list-inline-item">
-				<a href="#" class="btn btn-small btn-outline-primary btn-2" onclick="unselect_all();return false;">
+			<li class="list-inline-item rounded-2">
+				<a href="#" class="btn btn-small btn-outline-primary btn-2 rounded-2" onclick="unselect_all();return false;">
 					<i class="fas fa-window-close"></i>&nbsp;<?php $tr->trans('file.unselectall') ?>
 				</a>
 			</li>
-			<li class="list-inline-item">
-				<a href="#" class="btn btn-small btn-outline-primary btn-2" onclick="invert_all();return false;">
+			<li class="list-inline-item rounded-2">
+				<a href="#" class="btn btn-small btn-outline-primary btn-2 rounded-2" onclick="invert_all();return false;">
 					<i class="fas fa-list-alt"></i>&nbsp;<?php $tr->trans('file.invertselection') ?>
 				</a>
 			</li>
 			<?php if (class_exists('ZipArchive')): ?>
-			<li class="list-inline-item" id="multipleDownload" style="display:none">
+			<li class="list-inline-item rounded-2" id="multipleDownload" style="display:none">
 				<a href="#"
-				   class="btn btn-small btn-outline-primary btn-2"
+				   class="btn btn-small btn-outline-primary btn-2 rounded-2"
 				   onclick="fileActionPreparePreMultiple('downloadzip');">
 					<i class="fas fa-download"></i>&nbsp;<?php $tr->trans('file.downloadzip') ?>
 				</a>
@@ -794,35 +795,35 @@ if ($perm->isGranted(Permission::SHOWSYSINFO, null))
 		<ul class="list-inline footer-action m-2">
 			<li class="list-inline-item" id="multipleCopy" style="display:none">
 				<a href="#" data-bs-toggle="modal" data-bs-target="#fileActionModal"
-				   class="btn btn-small btn-outline-primary btn-2"
+				   class="btn btn-small btn-outline-primary btn-2 rounded-2"
 				   onclick="fileActionPreparePreMultiple('copy');">
 					<i class="fas fa-copy"></i>&nbsp;<?php $tr->trans('file.copy') ?>
 				</a>
 			</li>
 			<li class="list-inline-item" id="multipleMoverename" style="display:none">
 				<a href="#" data-bs-toggle="modal" data-bs-target="#fileActionModal"
-				   class="btn btn-small btn-outline-primary btn-2"
+				   class="btn btn-small btn-outline-primary btn-2 rounded-2"
 				   onclick="fileActionPreparePreMultiple('moverename');">
 					<i class="fas fas fa-people-carry"></i>&nbsp;<?php $tr->trans('file.moverename') ?>
 				</a>
 			</li>
 			<li class="list-inline-item" id="multipleDelete" style="display:none">
 				<a href="#" data-bs-toggle="modal" data-bs-target="#fileActionModal"
-				   class="btn btn-small btn-outline-primary btn-2"
+				   class="btn btn-small btn-outline-primary btn-2 rounded-2"
 				   onclick="fileActionPreparePreMultiple('delete');">
 					<i class="fas fa-trash"></i>&nbsp;<?php $tr->trans('file.delete') ?>
 				</a>
 			</li>
 			<li class="list-inline-item" id="multipleCompress" style="display:none">
 				<a href="#" data-bs-toggle="modal" data-bs-target="#fileActionModal"
-				   class="btn btn-small btn-outline-primary btn-2"
+				   class="btn btn-small btn-outline-primary btn-2 rounded-2"
 				   onclick="fileActionPreparePreMultiple('compress');">
 					<i class="fas fa-file-archive"></i>&nbsp;<?php $tr->trans('file.compress') ?>
 				</a>
 			</li>
 			<li class="list-inline-item" id="multipleExtract" style="display:none">
 				<a href="#" data-bs-toggle="modal" data-bs-target="#fileActionModal"
-				   class="btn btn-small btn-outline-primary btn-2"
+				   class="btn btn-small btn-outline-primary btn-2 rounded-2"
 				   onclick="fileActionPreparePreMultiple('extract');">
 					<i class="fas fa-external-link-square-alt"></i>&nbsp;<?php $tr->trans('file.extract') ?>
 				</a>

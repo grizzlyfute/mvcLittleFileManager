@@ -27,7 +27,9 @@ class Authenticator
 			{
 				$user = new User();
 				$user->fromArray($user_data);
-				self::$users[$username] = $user;
+				// strtolower:  Prevent user to make upper case in config
+				$login = strtolower($username);
+				self::$users[$login] = $user;
 			}
 		}
 	}
@@ -42,7 +44,7 @@ class Authenticator
 		$users_json = array();
 		foreach (self::$users as $user)
 		{
-			$users_json[$user->getUserName()] = $user->toArray();
+			$users_json[$user->getLogin()] = $user->toArray();
 		}
 		if (!file_put_contents (APPDATAPATH . 'users.json', json_encode ($users_json, JSON_PRETTY_PRINT)))
 		{
@@ -53,23 +55,25 @@ class Authenticator
 
 	public static function setEditUser(User $user) : void
 	{
-		self::$users[$user->getUserName()] = $user;
+		self::$users[$user->getLogin()] = $user;
 	}
 
 	public static function deleteUser(User $user): void
 	{
-		if (isset(self::$users[$user->getUserName()]))
+		$login = $user->getLogin();
+		if (isset(self::$users[$login]))
 		{
-			unset(self::$users[$user->getUserName()]);
+			unset(self::$users[$login]);
 			self::$users = array_values(self::$users);
 		}
 	}
 
 	public static function getUser($username) : ?User
 	{
-		if (isset(self::$users[$username]))
+		$login = strtolower($username);
+		if (isset(self::$users[$login]))
 		{
-			return self::$users[$username];
+			return self::$users[$login];
 		}
 		else
 		{
@@ -92,19 +96,21 @@ class Authenticator
 		// By session id
 		else if (isset($_SESSION[SESSIONNAME]['curuser']))
 		{
-			if ($_SESSION[SESSIONNAME]['curuser']->getUserName() != null &&
-				isset (self::$users[$_SESSION[SESSIONNAME]['curuser']->getUserName()]))
+			$login = $_SESSION[SESSIONNAME]['curuser']->getLogin();
+			if ($login != null &&
+				isset (self::$users[$login]))
 			{
-				$user = self::$users[$_SESSION[SESSIONNAME]['curuser']->getUserName()];
+				$user = self::$users[$login];
 			}
 		}
 		// Remember me
 		else if (isset($_COOKIE['username'], $_COOKIE['usertoken']) &&
 			$_COOKIE['username'] && $_COOKIE['usertoken'])
 		{
-			if (isset(self::$users[$_COOKIE['username']]))
+			$login = strtolower($_COOKIE['username']);
+			if (isset(self::$users[$login]))
 			{
-				$canditateUser = self::$users[$_COOKIE['username']];
+				$canditateUser = self::$users[$login];
 				if (self::checkToken($canditateUser, $_COOKIE['usertoken']))
 				{
 					$user = $canditateUser;
@@ -129,7 +135,7 @@ class Authenticator
 		$expire_ts = 0;
 		if ($token == null)
 		{
-			$token = crypt($user->getUserName() . $user->getPasswordHash(), '$5$' . bin2hex(openssl_random_pseudo_bytes(16)));
+			$token = crypt($user->getLogin() . $user->getPasswordHash(), '$5$' . bin2hex(openssl_random_pseudo_bytes(16)));
 		}
 
 		if ($rememberme)
@@ -142,7 +148,7 @@ class Authenticator
 		// Warning : secure cookies is accepted only one secure site using https. Disable it
 
 ob_start(); // for cookie
-		setcookie('username', $user->getUserName(), $expire_ts, '/', '', false, true);
+		setcookie('username', $user->getLogin(), $expire_ts, '/', '', false, true);
 		setcookie('usertoken', $token, $expire_ts, '/', '', false, true);
 ob_end_flush();
 	}
@@ -150,7 +156,7 @@ ob_end_flush();
 	public static function checkToken(User $user, string $token): bool
 	{
 		// crypt username+passwordhash, using same salt as $token
-		return hash_equals($token, crypt($user->getUserName() . $user->getPasswordHash(), $token));
+		return hash_equals($token, crypt($user->getLogin() . $user->getPasswordHash(), $token));
 	}
 
 	public static function checkPassword(User $user, string $password): bool
@@ -188,9 +194,10 @@ ob_end_flush();
 		// No cookie. Try standart method
 		if (!$curUser && isset($username, $password))
 		{
-			if (isset (self::$users[$username]))
+			$login = strtolower($username);
+			if (isset (self::$users[$login]))
 			{
-				$curUser = self::$users[$username];
+				$curUser = self::$users[$login];
 				if (!$curUser || !self::checkPassword($curUser, $password))
 				{
 					$curUser = null;

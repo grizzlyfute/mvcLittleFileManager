@@ -4,63 +4,63 @@ $isMainPage = isset($VIEWVARS['items']);
 // $title: the nav bar title
 ?>
 
-<!-- <nav class="navbar navbar-expand-md navbar-light bg-white mb-2 main-nav navbar-static-top" style="z-index: 5;"> -->
 <nav class="navbar navbar-expand-md navbar-light bg-white mb-2 main-nav fixed-top" style="position:relative; z-index: 5;">
 	<div class="container-fluid">
-		<a class="navbar-brand" href=""><?php echo isset($title) ? $title : ''?></a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
+		<a class="navbar-brand d-none d-sm-block" href=""><?php echo isset($title) ? $title : ''?></a>
 		<?php
-		if (isset($path) && $path !== null)
+		if (!isset($path) || $path == null)
 		{
-			$root = '/';
-			if ($this->getCurrentUser() != null)
-			{
-				$root .= $this->getCurrentUser()->getRootDirectory();
-			}
-			if ($path != '')
-			{
-				$exploded = explode('/', $path);
-				$count = count($exploded);
-				$array = array();
-				$parent = '';
-			}
-			else
-			{
-				$count = 0;
-			}
-			?>
-			<nav aria-label="breadcrumb" class="navbar">
-				<ol class="breadcrumb align-center mt-2">
-					<li class="breadcrumb-item">
-						<a href="?action=ls&p=<?php echo rawurlencode($root)?>">
-							<i class="fas fa-home" aria-hidden="true" style="position: relative; top: -0.2em" title="<?php $tr->trans('file.home') ?>"></i>
-						</a>
-					</li>
-					<?php
-					for ($i = 0; $i < $count; $i++)
+			$path = '';
+		}
+		$root = '/';
+		if ($this->getCurrentUser() != null)
+		{
+			$root .= $this->getCurrentUser()->getRootDirectory();
+		}
+		if ($path != '')
+		{
+			$exploded = explode('/', $path);
+			$count = count($exploded);
+			$array = array();
+			$parent = '';
+		}
+		else
+		{
+			$count = 0;
+		}
+		?>
+		<nav aria-label="breadcrumb" class="navbar">
+			<ol class="breadcrumb align-center mt-2 mb-0">
+				<li class="breadcrumb-item">
+					<a href="?action=ls&p=<?php echo rawurlencode($root)?>">
+						<i class="fas fa-home" aria-hidden="true" style="position: relative; top: -0.2em" title="<?php $tr->trans('file.home') ?>"></i>
+					</a>
+				</li>
+				<?php
+				for ($i = 0; $i < $count; $i++)
+				{
+					if (!$exploded[$i]) continue;
+					$parent = $parent . '/' . $exploded[$i];
+					if (!utils_isPathIncludeInto($root, $parent, true)) continue;
+					if ($i == $count -1)
 					{
-						if (!$exploded[$i]) continue;
-						$parent = $parent . '/' . $exploded[$i];
-						if (!utils_isPathIncludeInto($root, $parent, true)) continue;
-						if ($i == $count -1)
-						{
-							echo '<li class="breadcrumb-item active" aria-current="page">' . PHP_EOL;
-							echo '	' . utils_pathToHtml($exploded[$i]) . PHP_EOL;
-							echo '</li>' . PHP_EOL;
-						}
-						else
-						{
-							echo '<li class="breadcrumb-item">' . PHP_EOL;
-							echo '	<a href="?action=ls&p=' . rawurlencode($parent) . '">' . utils_pathToHtml($exploded[$i]) . '</a>' . PHP_EOL;
-							echo '</li>' . PHP_EOL;
-						}
+						echo '<li class="breadcrumb-item active" aria-current="page">' . PHP_EOL;
+						echo '	' . utils_pathToHtml($exploded[$i]) . PHP_EOL;
+						echo '</li>' . PHP_EOL;
 					}
-					?>
-				</ol>
-			</nav>
-		<?php }?>
+					else
+					{
+						echo '<li class="breadcrumb-item">' . PHP_EOL;
+						echo '	<a href="?action=ls&p=' . rawurlencode($parent) . '">' . utils_pathToHtml($exploded[$i]) . '</a>' . PHP_EOL;
+						echo '</li>' . PHP_EOL;
+					}
+				}
+				?>
+			</ol>
+		</nav>
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<div class="col text-end">
@@ -88,7 +88,22 @@ $isMainPage = isset($VIEWVARS['items']);
 						</a>
 					</li>
 					<?php endif; ?>
-				<?php endif; ?>
+				<?php else:
+					if ($VIEWVARS['file'] && $perm->isGranted(Permission::VIEW, $path) && $count > 0)
+					{
+						$file = $VIEWVARS['file'];
+						$filename = utils_pathToHtml($file->getName());
+						$filesize = utils_getFileSizeSuffix($file->getSize());
+						$mimetype = isset ($VIEWVARS['mimetype']) ? ' (' . $VIEWVARS['mimetype'] . ')' : '';
+					?>
+					<li class="nav-item">
+						<a title="<?php echo $filename . ' - ' . $filesize . $mimetype?>" class="nav-link" href="?action=download&p=<?php echo rawurlencode($file->getFullPath()) ?>&dlf">
+							<i class="fas fa-cloud-download-alt"></i>&nbsp;<?php $tr->trans('file.download') ?>
+						</a>
+					</li>
+					<?php } ?>
+				<?php endif; // isMainPage ?>
+
 					<li class="nav-item avatar dropdown">
 						<a class="nav-link dropdown-toggle" id="navbarDropdownMenuLinkSetting" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<i class="fas fa-user-circle"></i>&nbsp;<?php echo $this->getCurrentUser() != null ? $this->getCurrentUser()->getUserName(): '' ?>

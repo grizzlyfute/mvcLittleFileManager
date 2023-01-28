@@ -11,41 +11,106 @@ include ('views/headers.php'); ?>
 	$filetype = $VIEWVARS['type'];
 	$file = $VIEWVARS['file'];
 ?>
-		<p class="break-word">
-			<?php echo '<b>' . $tr->translate('file.name') . '</b>: ' . utils_pathToHtml($file->getName()) ?><br/>
-			<?php echo '<b>' . $tr->translate('file.size') . '</b>: ' . utils_getFileSizeSuffix($file->getSize()) ?><br/>
-			<?php echo '<b>' . $tr->translate('file.mimetype') . '</b>: ' . $VIEWVARS['mimetype']?><br/>
-		</p>
-		<p>
-			<b><a href="?p=<?php echo $VIEWVARS['parent'] ?>"><i class="fas fa-chevron-circle-left go-back"></i>&nbsp;<?php $tr->trans('common.back') ?></a></b> &nbsp;
-			<b><a href="?action=download&p=<?php echo rawurlencode($file->getFullPath()) ?>&dlf"><i class="fas fa-cloud-download-alt"></i>&nbsp;<?php echo $tr->trans('file.download') ?></a></b> &nbsp;
+		<div class="d-inline-flex">
+		<?php
+			/*  hide text on mobile
+			https://stackoverflow.com/questions/14207109/hiding-elements-in-responsive-layout
+			| 	                |   XS    |    SM   |    MD   |   LG    |   XL    |
+			| d-none d-sm-block | hidden  | visible | visible | visible | visible |
+			| d-none d-md-block | hidden  | hidden  | visible | visible | visible |
+			| d-none d-lg-block | hidden  | hidden  | hidden  | visible | visible |
+			| d-none d-xl-block | hidden  | hidden  | hidden  | hidden  | visible |
+			| d-block d-sm-none | visible | hidden  | hidden  | hidden  | hidden  |
+			| d-block d-md-none | visible | visible | hidden  | hidden  | hidden  |
+			| d-block d-lg-none | visible | visible | visible | hidden  | hidden  |
+			| d-block d-xl-none | visible | visible | visible | visible | hidden  |
+			 */ ?>
+
+			<div class="d-none d-sm-block">
+				<a href="?p=<?php echo $VIEWVARS['parent'] ?>">
+					<i class="fas fa-chevron-circle-left go-back"></i>&nbsp;<?php $tr->trans('common.back'); ?></i>
+				</a> &nbsp;
+			</div>
+			<div class="d-block d-sm-none">
+				<a href="?p=<?php echo $VIEWVARS['parent']?>" title="<?php $tr->trans('common.back'); ?>">
+					<i class="fas fa-chevron-circle-left go-back" style="font-size:1.3em"></i>&nbsp;</i>
+				</a> &nbsp;
+			</div>
 			&nbsp;
-			<?php if ($filetype == 'text' && $perm->isGranted(Permission::MODIFY, $path)): ?>
-			<b><a href="?action=edit&p=<?php echo rawurlencode($file->getFullPath()) ?>" class="edit-file"><i class="fas fa-pen-square"></i>&nbsp;<?php $tr->trans('file.edit') ?>
-			</a></b> &nbsp;
-			<?php endif; ?>
-		</p>
-		<p>
+
 			<?php if ($VIEWVARS['previous'] != null): ?>
-			<a href="?action=view&p=<?php echo rawurlencode($VIEWVARS['previous']->getFullPath())?>" title="<?php echo utils_pathToHtml($VIEWVARS['previous']->getName()) ?>">
-				<i class="fas fa-backward"></i>&nbsp;<?php $tr->trans('file.previous')?>
-			</a>&nbsp;
+			<div class="d-none d-sm-block">
+				<a href="?action=view&p=<?php echo rawurlencode($VIEWVARS['previous']->getFullPath())?>" title="<?php echo utils_pathToHtml($VIEWVARS['previous']->getName()) ?>">
+					<i class="fas fa-backward"></i>&nbsp;<?php $tr->trans('file.previous')?></i>
+				</a>&nbsp;
+			</div>
+			<div class="d-block d-sm-none">
+				<a href="?action=view&p=<?php echo rawurlencode($VIEWVARS['previous']->getFullPath())?>" title="<?php echo utils_pathToHtml($VIEWVARS['previous']->getName()) ?>">
+					<i class="fas fa-backward" style="font-size:1.3em"></i>&nbsp;</i>
+				</a>&nbsp;
+			</div>
 			<?php endif; ?>
 			<?php if ($VIEWVARS['next'] != null): ?>
-			<a href="?action=view&p=<?php echo rawurlencode($VIEWVARS['next']->getFullPath())?>" title="<?php echo utils_pathToHtml($VIEWVARS['next']->getName()) ?>">
-				<i class="fas fa-forward"></i>&nbsp;<?php $tr->trans('file.next')?>
-			</a>&nbsp;
+			<div class="d-none d-sm-block">
+				<a href="?action=view&p=<?php echo rawurlencode($VIEWVARS['next']->getFullPath())?>" title="<?php echo utils_pathToHtml($VIEWVARS['next']->getName()) ?>">
+					<i class="fas fa-forward"></i>&nbsp;<?php $tr->trans('file.next')?></i>
+				</a>&nbsp;
+			</div>
+			<div class="d-block d-sm-none">
+				<a href="?action=view&p=<?php echo rawurlencode($VIEWVARS['next']->getFullPath())?>" title="<?php echo utils_pathToHtml($VIEWVARS['next']->getName()) ?>">
+					<i class="fas fa-forward" style="font-size:1.3em"></i>&nbsp;</i>
+				</a>&nbsp;
+			</div>
 			<?php endif; ?>
 
+			<?php
+			{
+				$filename = utils_pathToHtml($file->getName());
+				$filesize = utils_getFileSizeSuffix($file->getSize());
+				$mimetype = isset ($VIEWVARS['mimetype']) ? ' (' . $VIEWVARS['mimetype'] . ')' : '';
+			?>
+			<div class="d-none d-sm-block">
+				<a href="?action=download&p=<?php echo rawurlencode($file->getFullPath()) ?>&dlf" title="<?php echo $filename . ' - ' . $filesize . $mimetype?>" >
+					<i class="fas fa-cloud-download-alt"></i>&nbsp;<?php $tr->trans('file.download') ?></i>
+				</a>&nbsp;
+			</div>
+			<div class="d-block d-sm-none">
+				<a href="?action=download&p=<?php echo rawurlencode($file->getFullPath()) ?>&dlf" title="<?php echo $filename . ' - ' . $filesize . $mimetype?>" >
+					<i class="fas fa-cloud-download-alt" style="font-size:1.3em"></i>&nbsp;</i>
+				</a>&nbsp;
+			</div>
+			<?php } ?>
+
 			<?php if ($filetype == 'image' && $CONFIG['thumbnail'] && function_exists('gd_info')): ?>
-			<a href="?action=imagesgrid&p=<?php echo $file->getFullPath(); ?>">
-				<i class="fas fa-table"></i>&nbsp;<?php $tr->trans('file.imagesgridview') ?>
-			</a>
+			<div class="d-none d-sm-block">
+				<a href="?action=imagesgrid&p=<?php echo $file->getFullPath(); ?>">
+					<i class="fas fa-table"></i>&nbsp;<?php $tr->trans('file.imagesgridview') ?></i>
+				</a>&nbsp;
+			</div>
+			<div class="d-block d-sm-none">
+				<a href="?action=imagesgrid&p=<?php echo $file->getFullPath(); ?>" title="<?php $tr->trans('file.imagesgridview'); ?>">
+					<i class="fas fa-table" style="font-size:1.3em"></i>&nbsp;</i>
+				</a>&nbsp;
+			</div>
 			<?php endif; ?>
-		</p>
-		<p>
+			<?php if ($filetype == 'text' && $perm->isGranted(Permission::MODIFY, $path)): ?>
+			<!-- TODO $$$$$ -->
+			<div class="d-none d-sm-block">
+				<a href="?action=edit&p=<?php echo rawurlencode($file->getFullPath()) ?>" class="edit-file">
+					<i class="fas fa-pen-square"></i>&nbsp;<?php $tr->trans('file.edit') ?></i>
+				</a>
+			</div>
+			<div class="d-block d-sm-none">
+				<a href="?action=edit&p=<?php echo rawurlencode($file->getFullPath()) ?>" class="edit-file" title="<?php $tr->trans('file.edit'); ?>">
+					<i class="fas fa-pen-square" style="font-size:1.3em"></i>&nbsp;</i>
+				</a> &nbsp;
+			</div>
+			<?php endif; ?>
+		</div>
+
+		<div class="">
 		<?php
-		$file_url = $_SERVER['PHP_SELF'] . '?action=download&p=' . rawurlencode($file->getFullPath());
+		$file_url = '?action=download&p=' . rawurlencode($file->getFullPath());
 		if ($VIEWVARS['online'] == 'google')
 		{
 			$file_url = $_SERVER['SERVER_NAME'] . $file_url;
@@ -97,7 +162,7 @@ include ('views/headers.php'); ?>
 		}
 		elseif ($filetype == 'pdf')
 		{
-			echo '<object data="' . $file_url . '" type="application/pdf" style="width:100%; min-height:80vh;" class="position-absolute">' . PHP_EOL;
+			echo '<object data="' . $file_url . '" type="application/pdf" style="width:100%; min-height:80vh;" class="position-relative">' . PHP_EOL;
 			echo '	<embed src="' . $file_url . '" type="application/pdf" />' . PHP_EOL;
 			echo '</object>' . PHP_EOL;
 
@@ -138,7 +203,8 @@ include ('views/headers.php'); ?>
 			echo '<pre class="with-hljs"><code class="' . $hljs_class . '">' . htmlspecialchars($content) . '</code></pre>';
 		}
 		?>
-		</p>
+		</div>
+
 	</div>
 </div>
 <?php include ('views/footers.php'); ?>

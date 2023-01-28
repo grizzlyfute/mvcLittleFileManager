@@ -9,13 +9,27 @@ require_once('config.php');
 
 class ConfigurationController extends BaseController
 {
+	private function getAllTimeZones() : array
+	{
+		$ret = array();
+		// timezone_identifiers_list
+		foreach(\DateTimeZone::listIdentifiers() as $zoneLabel)
+		{
+			$currentTimeInZone = new \DateTime("now", new \DateTimeZone($zoneLabel));
+			$currentTimeDiff = $currentTimeInZone->format('P');
+			$ret[$zoneLabel] = $zoneLabel . ' (GMT' .  $currentTimeDiff . ')';
+		}
+
+		return $ret;
+	}
+
 	private function possibleArrayValues() : array
 	{
 		return array
 		(
 			'permissions' => Permission::getPossiblePermissions(),
 			'lang' => array ('en', 'fr'),
-			'timezone' => array ('Etc/GMT', 'Etc/GMT+0', 'Etc/GMT+1', 'Etc/GMT+10', 'Etc/GMT+11', 'Etc/GMT+12', 'Etc/GMT+2', 'Etc/GMT+3', 'Etc/GMT+4', 'Etc/GMT+5', 'Etc/GMT+6', 'Etc/GMT+7', 'Etc/GMT+8', 'Etc/GMT+9', 'Etc/GMT-0', 'Etc/GMT-1', 'Etc/GMT-10', 'Etc/GMT-11', 'Etc/GMT-12', 'Etc/GMT-13', 'Etc/GMT-14', 'Etc/GMT-2', 'Etc/GMT-3', 'Etc/GMT-4', 'Etc/GMT-5', 'Etc/GMT-6', 'Etc/GMT-7', 'Etc/GMT-8', 'Etc/GMT-9', 'Etc/GMT0', 'Etc/Universal', 'Etc/UTC', 'Etc/Zulu'),
+			'timezone' => $this->getAllTimeZones(),
 			'dateformat' => array('Y-m-d H:i:s', 'd/m/Y H:i:s', 'F j, Y, g:i a', 'm.d.y', 'Ymd', 'D M j G:i:s T Y'),
 			'onlineviewer' => array ('none', 'google', 'microsoft'),
 		);

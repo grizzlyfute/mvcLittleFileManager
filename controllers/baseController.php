@@ -40,19 +40,6 @@ class BaseController
 
 	public function redirect(string $urn): void
 	{
-		global $CONFIG;
-		if (isset($CONFIG['selfurl']) && $CONFIG['selfurl'])
-		{
-			$selfurl = $CONFIG['selfurl'];
-		}
-		else
-		{
-			$is_https =
-				(isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1)) ||
-				(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https');
-			$selfurl = ($is_https ? 'https' : 'http') . '://' .  $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
-		}
-
 		// Store message in session
 		if ($this->msg)
 		{
@@ -65,7 +52,7 @@ class BaseController
 			$_SESSION[SESSIONNAME]['msgclass'] = null;
 		}
 
-		header('Location: ' . $selfurl . $urn, true, 302);
+		header('Location: ' . $urn, true, 302);
 	}
 
 	public function setMessage(string $msg, string $msgclass) : void

@@ -3,7 +3,7 @@ $title = $tr->translate('file.edit');
 $path = $VIEWVARS['file']->getFullPath();
 include ('views/headers.php'); ?>
 <?php
-$file_url = $_SERVER['PHP_SELF'] . '?action=download&p=' . rawurlencode($path);
+$file_url = '?action=download&p=' . rawurlencode($path);
 ?>
 
 <script>

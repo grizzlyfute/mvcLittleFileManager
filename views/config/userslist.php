@@ -8,7 +8,7 @@ include ('views/headers.php'); ?>
 	</div> -->
 	<div class="card-body">
 	<div class="">
-		<a class="btn btn-small btn-outline-primary btn-2" href="?action=newuser"><i class="fas fa-plus-square"></i>&nbsp;<?php echo $tr->trans('setting.adduser')?></a>
+		<a class="btn btn-small btn-outline-primary btn-2 rounded-2" href="?action=newuser"><i class="fas fa-plus-square"></i>&nbsp;<?php echo $tr->trans('setting.adduser')?></a>
 	</div>
 	<div class="row">
 		<table class="table">

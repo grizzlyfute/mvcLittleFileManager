@@ -135,23 +135,32 @@ function showSlides(n)
 {
 	var i;
 	var slides = document.getElementsByClassName("imgBigSlides");
-	var dots = document.getElementsByClassName("thumbnail");
 	var captionText = document.getElementById("caption");
 	var dwnldLink = document.getElementById("downloadLink");
+	var nextImg = null;
 	if (n < 0) n += slides.length;
 	if (slides.length > 0) slideIndex = n % slides.length;
 	for (i = 0; i < slides.length; i++)
 	{
 		slides[i].style.display = "none";
 	}
+	slides[slideIndex].style.display = "block";
+	nextImg = slides[slideIndex].getElementsByTagName("img")[0];
+	if (!nextImg.getAttribute("src"))
+	{
+		nextImg.setAttribute("src", nextImg.getAttribute("srclazy"));
+	}
+	captionText.innerHTML = nextImg.alt;
+	dwnldLink.href = nextImg.src + "&dlf";
+
+	<?php if ($CONFIG['thumbnail'] && function_exists('gd_info')): ?>
+	var dots = document.getElementsByClassName("thumbnail");
 	for (i = 0; i < dots.length; i++)
 	{
 		dots[i].className = dots[i].className.replace(" active", "");
 	}
-	slides[slideIndex].style.display = "block";
 	dots[slideIndex].className += " active";
-	captionText.innerHTML = dots[slideIndex].alt;
-	dwnldLink.href = dots[slideIndex].src + "&dlf";
+	<?php endif; ?>
 }
 </script>
 
@@ -169,12 +178,12 @@ function showSlides(n)
 <div class="container">
 	<div class="container">
 		<?php for ($i = 0; $i < $filesCount; $i++):
-			$fileUrl = $_SERVER['PHP_SELF'] . '?action=download&p=' . rawurlencode($filesList[$i]->getFullPath());
+			$fileUrl = '?action=download&p=' . rawurlencode($filesList[$i]->getFullPath());
 		?>
 		<div class="imgBigSlides">
 			<div class="numbertext"><?php echo '' . ($i + 1) . ' / ' . $filesCount; ?></div>
 			<img
-				src="<?php echo $fileUrl; ?>"
+				srclazy="<?php echo $fileUrl; ?>"
 				alt="<?php echo $filesList[$i]->getName(); ?>"
 				style="width:100%;height:100%;max-width:90vw;max-height:60vw;"
 			/>
@@ -189,9 +198,10 @@ function showSlides(n)
 			<p id="caption"></p>
 		</div>
 
+		<?php if ($CONFIG['thumbnail'] && function_exists('gd_info')): ?>
 		<div class="row" style="padding:0">
 		<?php for ($i = 0; $i < $filesCount; $i++):
-			$fileUrl = $_SERVER['PHP_SELF'] . '?action=thumbnail&p=' . rawurlencode($filesList[$i]->getFullPath());
+			$fileUrl = '?action=thumbnail&p=' . rawurlencode($filesList[$i]->getFullPath());
 		?>
 			<div class="column">
 				<img
@@ -204,6 +214,8 @@ function showSlides(n)
 			</div>
 		<?php endfor; ?>
 		</div>
+		<?php endif; ?>
+
 	</div>
 </div>
 

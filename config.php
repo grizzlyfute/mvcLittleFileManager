@@ -1,7 +1,7 @@
 <?php
 
 // The path where app setting is located
-define('APPDATAPATH', '/home/oursenpeluche/www/newFilesManager/src/data' . DIRECTORY_SEPARATOR);
+define('APPDATAPATH',  $_ENV['HOME']  . DIRECTORY_SEPARATOR . 'mvcLittleFileManager/config' . DIRECTORY_SEPARATOR);
 if (APPDATAPATH == '') die ('Path to config data directory is not defined. Set it in ' . __FILE__);
 $CONFIG = array();
 
@@ -21,7 +21,6 @@ $CONFIG_DEFAULT = array
 	'exclude_items' => array(),
 	'show_hidden_files' => true,
 	'rememberme_ts' => 180*24*60*60,
-	'selfurl' => null,
 	'tmppath' => sys_get_temp_dir(),
 	'max_size_to_compress' => 50000000,
 	'thumbnail' => false,
