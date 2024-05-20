@@ -36,7 +36,7 @@ if (function_exists('mb_regex_encoding'))
 }
 // Display only source from this site
 // header('Content-Security-Policy', 'default-src \'self\'; img-src *; child-src *');
-header('Content-Security-Policy: efault-src \'self\'');
+// header('Content-Security-Policy: default-src \'self\'');
 
 session_cache_limiter('');
 session_name(SESSIONNAME);

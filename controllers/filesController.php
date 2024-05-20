@@ -73,6 +73,7 @@ class FilesController extends BaseController
 				$items[] = $entry;
 			}
 			closedir ($handle);
+			sort($items, SORT_REGULAR);
 		}
 		else
 		{
@@ -393,7 +394,7 @@ class FilesController extends BaseController
 		$this->echoJsonAndExit($items);
 	}
 
-	public function imagesgridAction()
+	public function imagesviewAction()
 	{
 		global $CONFIG;
 		$path = $this->getPath();
@@ -403,7 +404,7 @@ class FilesController extends BaseController
 		}
 		$syspath = $this->getRealPath($path);
 		$basedir = dirname($syspath);
-		$pathBaseDir = utils_concertSysToPath($CONFIG['rootdirectory'], $basedir);
+		$pathBaseDir = utils_convertSysToPath($CONFIG['rootdirectory'], $basedir);
 		$entries = $this->readDirEntries($basedir);
 		$imgExt = utils_getThumbnailExts();
 		$curIndex = 0;
@@ -436,12 +437,12 @@ class FilesController extends BaseController
 			}
 		}
 
-		$this->view('files/imagesgrid.php', array
+		$this->view('files/imagesview.php', array
 		(
 			'curpath' => $path,
 			'parent' => $this->getParent($path),
 			'items' => $items,
-			'curindex' => $curIndex ,
+			'curindex' => $curIndex,
 		));
 	}
 
@@ -680,7 +681,14 @@ class FilesController extends BaseController
 				}
 				else if (!empty($srcPathes))
 				{
-					$ret = rename($srcPathes[0], $dstPath);
+					if (!is_dir($dstPath))
+					{
+						$ret = rename($srcPathes[0], $dstPath);
+					}
+					else
+					{
+						$ret = rename($srcPathes[0], $dstPath .DIRECTORY_SEPARATOR . basename($srcPathes[0]));
+					}
 				}
 				else
 				{
@@ -734,12 +742,12 @@ class FilesController extends BaseController
 				if ($cnt == 1)
 				{
 					$prefix .= str_replace(array('.', '/', '\\', '"', '*', '?', '!', ';', ':', '<', '>'), '_', basename($srcPathes[0])) . '_';
-					$tmpName = tempnam($CONFIG['tmppath'], $prefix) . '.zip';
+					$tmpName = tempnam($CONFIG['tmppath'], $prefix);
 				}
 				else if ($cnt > 1)
 				{
 					$prefix .= str_replace(array('.', '/', '\\', '"', '*', '?', '!', ';', ':', '<', '>'), '_', basename($this->getRealPath($parent))) . '_';
-					$tmpName = tempnam($CONFIG['tmppath'], $prefix) . '.zip';
+					$tmpName = tempnam($CONFIG['tmppath'], $prefix);
 				}
 				if (!$tmpName)
 				{
@@ -748,16 +756,19 @@ class FilesController extends BaseController
 				}
 				else
 				{
-					$ret &= packFiles($srcPathes, $tmpName, $this->getRealPath($parent), $err, $CONFIG['max_size_to_compress']);
+					$tmpZipName = $tmpName . '.zip';
+					$ret &= packFiles($srcPathes, $tmpZipName, $this->getRealPath($parent), $err, $CONFIG['max_size_to_compress']);
+					// After zipped to warranty uniq name
+					unlink($tmpName);
 					if ($ret)
 					{
 						try
 						{
-							$this->serveFile($tmpName, true);
+							$this->serveFile($tmpZipName, true);
 						}
 						finally
 						{
-							unlink($tmpName);
+							unlink($tmpZipName);
 						}
 						return;
 					}

@@ -21,6 +21,7 @@ $CONFIG_DEFAULT = array
 	'exclude_items' => array(),
 	'show_hidden_files' => true,
 	'rememberme_ts' => 180*24*60*60,
+	'selfurl' => null,
 	'tmppath' => sys_get_temp_dir(),
 	'max_size_to_compress' => 50000000,
 	'thumbnail' => false,

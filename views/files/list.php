@@ -586,7 +586,16 @@ foreach ($VIEWVARS['items'] as $item)
 	}
 	else
 	{
-		$itemlink = '?action=view&p=' . rawurlencode($item->getFullPath());
+		// Should be coherent with the '?action=imagesview' filters
+		if (in_array($item->getExtension(), $thumbnailExts))
+		{
+			$itemlink = '?action=imagesview&p=' . rawurlencode($item->getFullPath());
+		}
+		else
+		{
+			$itemlink = '?action=view';
+		}
+		$itemlink .= '&p=' . rawurlencode($item->getFullPath());
 		if ($item->getIsLink()) $img = 'fas fa-link';
 		else $img = utils_getFileIconClass($item->getName());
 	}

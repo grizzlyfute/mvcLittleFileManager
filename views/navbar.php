@@ -89,7 +89,7 @@ $isMainPage = isset($VIEWVARS['items']);
 					</li>
 					<?php endif; ?>
 				<?php else:
-					if ($VIEWVARS['file'] && $perm->isGranted(Permission::VIEW, $path) && $count > 0)
+					if (isset($VIEWVARS['files']) && $VIEWVARS['file'] && $perm->isGranted(Permission::VIEW, $path) && $count > 0)
 					{
 						$file = $VIEWVARS['file'];
 						$filename = utils_pathToHtml($file->getName());
@@ -131,6 +131,11 @@ $isMainPage = isset($VIEWVARS['items']);
 								</a>
 							</li>
 							<?php endif; ?>
+							<li>
+								<a title="<?php $tr->trans('setting.about'); ?>" class="dropdown-item nav-link" href="version.php">
+									<i class="fas fa-connectdevelop" aria-hidden="true"></i>&nbsp;<?php $tr->trans('setting.about'); ?>
+								</a>
+							</li>
 							<?php if ($this->getCurrentUser() != null): ?>
 							<li><hr class="dropdown-divider"></li>
 							<li>

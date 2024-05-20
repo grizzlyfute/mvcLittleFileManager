@@ -188,7 +188,6 @@ class CompressorZip extends ACompressor
 		$this->dispose();
 	}
 
-
 	public function addEmptyDir(string $path): bool
 	{
 		if (!$this->zipper) return false;
@@ -297,7 +296,32 @@ class CompressorPhar extends ACompressor
  */
 function getArchiveInfo($path, $ext)
 {
-	if ($ext == 'zip' && function_exists('zip_open'))
+	if ($ext == 'zip' && class_exists('ZipArchive'))
+	{
+		$archive = new ZipArchive();
+		$res = $archive->open($path);
+		if ($res)
+		{
+			$filenames = array();
+			for ($i = 0; !empty($archive->statIndex($i)['name']); $i++)
+			{
+				// array('name', 'index', 'crc', 'size', 'mtime', 'comp_size', 'comp_method');
+				$statIndex = $archive->statIndex($i);
+				$filenames[] = array
+				(
+					'name' => $statIndex['name'],
+					'filesize' => $statIndex['size'],
+					'compressed_size' => $statIndex['comp_size'],
+					'folder' => substr($statIndex['name'], -1) == DIRECTORY_SEPARATOR
+					// 'compression_method' => $statIndex['comp_method'],
+				);
+			}
+			$archive->close();
+			return $filenames;
+		}
+	}
+	// Deprecated since php 8.0
+	else if ($ext == 'zip' && function_exists('zip_open'))
 	{
 		$arch = zip_open($path);
 		if (is_resource($arch))

@@ -291,7 +291,7 @@ function utils_getFileIconClass($path)
 		case 'cbz':
 		case 'epub':
 		case 'kcc':
-			$img = 'fas fa-books';
+			$img = 'fas fa-book';
 			break;
 
 		default:
@@ -574,8 +574,9 @@ function utils_convertPathToSys($path)
 	return $path;
 }
 
-function utils_concertSysToPath($rootpath, $syspath)
+function utils_convertSysToPath($rootpath, $syspath)
 {
+	$rootpath = realpath($rootpath);
 	if (substr($syspath, 0, strlen($rootpath)) === $rootpath)
 	{
 		$syspath = substr($syspath, strlen($rootpath));

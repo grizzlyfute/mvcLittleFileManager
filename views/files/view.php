@@ -5,7 +5,7 @@ include ('views/headers.php'); ?>
 <link rel="stylesheet" href="libs/highlight-11.2.0/styles/<?php echo $CONFIG['highlightjs_style'] ?>.min.css"/>
 <script src="libs/highlight-11.2.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
-<div class="card mb-2" style="margin:0em; padding:1em;">
+<div class="container-fluid mb-2" style="margin:0em; padding:1em;height:80vh;">
 	<div class="row">
 <?php
 	$filetype = $VIEWVARS['type'];
@@ -28,37 +28,36 @@ include ('views/headers.php'); ?>
 
 			<div class="d-none d-sm-block">
 				<a href="?p=<?php echo $VIEWVARS['parent'] ?>">
-					<i class="fas fa-chevron-circle-left go-back"></i>&nbsp;<?php $tr->trans('common.back'); ?></i>
+					<i class="fas fa-chevron-circle-left go-back"></i>&nbsp;<?php $tr->trans('common.back'); ?>
 				</a> &nbsp;
 			</div>
 			<div class="d-block d-sm-none">
 				<a href="?p=<?php echo $VIEWVARS['parent']?>" title="<?php $tr->trans('common.back'); ?>">
-					<i class="fas fa-chevron-circle-left go-back" style="font-size:1.3em"></i>&nbsp;</i>
+					<i class="fas fa-chevron-circle-left go-back" style="font-size:1.3em"></i>&nbsp;
 				</a> &nbsp;
 			</div>
-			&nbsp;
 
 			<?php if ($VIEWVARS['previous'] != null): ?>
 			<div class="d-none d-sm-block">
 				<a href="?action=view&p=<?php echo rawurlencode($VIEWVARS['previous']->getFullPath())?>" title="<?php echo utils_pathToHtml($VIEWVARS['previous']->getName()) ?>">
-					<i class="fas fa-backward"></i>&nbsp;<?php $tr->trans('file.previous')?></i>
+					<i class="fas fa-backward"></i>&nbsp;<?php $tr->trans('file.previous')?>
 				</a>&nbsp;
 			</div>
 			<div class="d-block d-sm-none">
 				<a href="?action=view&p=<?php echo rawurlencode($VIEWVARS['previous']->getFullPath())?>" title="<?php echo utils_pathToHtml($VIEWVARS['previous']->getName()) ?>">
-					<i class="fas fa-backward" style="font-size:1.3em"></i>&nbsp;</i>
+					<i class="fas fa-backward" style="font-size:1.3em"></i>&nbsp;
 				</a>&nbsp;
 			</div>
 			<?php endif; ?>
 			<?php if ($VIEWVARS['next'] != null): ?>
 			<div class="d-none d-sm-block">
 				<a href="?action=view&p=<?php echo rawurlencode($VIEWVARS['next']->getFullPath())?>" title="<?php echo utils_pathToHtml($VIEWVARS['next']->getName()) ?>">
-					<i class="fas fa-forward"></i>&nbsp;<?php $tr->trans('file.next')?></i>
+					<i class="fas fa-forward"></i>&nbsp;<?php $tr->trans('file.next')?>
 				</a>&nbsp;
 			</div>
 			<div class="d-block d-sm-none">
 				<a href="?action=view&p=<?php echo rawurlencode($VIEWVARS['next']->getFullPath())?>" title="<?php echo utils_pathToHtml($VIEWVARS['next']->getName()) ?>">
-					<i class="fas fa-forward" style="font-size:1.3em"></i>&nbsp;</i>
+					<i class="fas fa-forward" style="font-size:1.3em"></i>&nbsp;
 				</a>&nbsp;
 			</div>
 			<?php endif; ?>
@@ -71,25 +70,25 @@ include ('views/headers.php'); ?>
 			?>
 			<div class="d-none d-sm-block">
 				<a href="?action=download&p=<?php echo rawurlencode($file->getFullPath()) ?>&dlf" title="<?php echo $filename . ' - ' . $filesize . $mimetype?>" >
-					<i class="fas fa-cloud-download-alt"></i>&nbsp;<?php $tr->trans('file.download') ?></i>
+					<i class="fas fa-cloud-download-alt"></i>&nbsp;<?php $tr->trans('file.download') ?>
 				</a>&nbsp;
 			</div>
 			<div class="d-block d-sm-none">
 				<a href="?action=download&p=<?php echo rawurlencode($file->getFullPath()) ?>&dlf" title="<?php echo $filename . ' - ' . $filesize . $mimetype?>" >
-					<i class="fas fa-cloud-download-alt" style="font-size:1.3em"></i>&nbsp;</i>
+					<i class="fas fa-cloud-download-alt" style="font-size:1.3em"></i>&nbsp;
 				</a>&nbsp;
 			</div>
 			<?php } ?>
 
 			<?php if ($filetype == 'image' && $CONFIG['thumbnail'] && function_exists('gd_info')): ?>
 			<div class="d-none d-sm-block">
-				<a href="?action=imagesgrid&p=<?php echo $file->getFullPath(); ?>">
-					<i class="fas fa-table"></i>&nbsp;<?php $tr->trans('file.imagesgridview') ?></i>
+				<a href="?action=imagesview&p=<?php echo $file->getFullPath(); ?>">
+					<i class="fas fa-table"></i>&nbsp;<?php $tr->trans('file.imagesviewview') ?>
 				</a>&nbsp;
 			</div>
 			<div class="d-block d-sm-none">
-				<a href="?action=imagesgrid&p=<?php echo $file->getFullPath(); ?>" title="<?php $tr->trans('file.imagesgridview'); ?>">
-					<i class="fas fa-table" style="font-size:1.3em"></i>&nbsp;</i>
+				<a href="?action=imagesview&p=<?php echo $file->getFullPath(); ?>" title="<?php $tr->trans('file.imagesviewview'); ?>">
+					<i class="fas fa-table" style="font-size:1.3em"></i>&nbsp;
 				</a>&nbsp;
 			</div>
 			<?php endif; ?>
@@ -97,18 +96,18 @@ include ('views/headers.php'); ?>
 			<!-- TODO $$$$$ -->
 			<div class="d-none d-sm-block">
 				<a href="?action=edit&p=<?php echo rawurlencode($file->getFullPath()) ?>" class="edit-file">
-					<i class="fas fa-pen-square"></i>&nbsp;<?php $tr->trans('file.edit') ?></i>
+					<i class="fas fa-pen-square"></i>&nbsp;<?php $tr->trans('file.edit') ?>
 				</a>
 			</div>
 			<div class="d-block d-sm-none">
 				<a href="?action=edit&p=<?php echo rawurlencode($file->getFullPath()) ?>" class="edit-file" title="<?php $tr->trans('file.edit'); ?>">
-					<i class="fas fa-pen-square" style="font-size:1.3em"></i>&nbsp;</i>
+					<i class="fas fa-pen-square" style="font-size:1.3em"></i>&nbsp;
 				</a> &nbsp;
 			</div>
 			<?php endif; ?>
 		</div>
 
-		<div class="">
+		<div class="container container-fluid" style="max-height:100vh;">
 		<?php
 		$file_url = '?action=download&p=' . rawurlencode($file->getFullPath());
 		if ($VIEWVARS['online'] == 'google')
@@ -171,7 +170,7 @@ include ('views/headers.php'); ?>
 		}
 		elseif ($filetype == 'image')
 		{
-			echo '<img src="' . $file_url . '" alt="" class="preview-img">' . PHP_EOL;
+			echo '<img src="' . $file_url . '" alt="" class="preview-img" style="max-width:100%;max-height:100%">' . PHP_EOL;
 		}
 		elseif ($filetype == 'audio')
 		{
@@ -186,7 +185,7 @@ include ('views/headers.php'); ?>
 			$syspath = $CONFIG['rootdirectory'] . DIRECTORY_SEPARATOR . utils_convertPathToSys($file->getFullPath());
 			$content = file_get_contents($syspath);
 			$ext = strtolower(pathinfo($syspath, PATHINFO_EXTENSION));
-			// highlight
+			// Highlight
 			$hljs_classes = array
 			(
 				'shtml' => 'xml',
@@ -201,6 +200,15 @@ include ('views/headers.php'); ?>
 				$hljs_class = 'nohighlight';
 			}
 			echo '<pre class="with-hljs"><code class="' . $hljs_class . '">' . htmlspecialchars($content) . '</code></pre>';
+		}
+		else
+		{
+			echo '<div class="center m-1" style="max-width:100%; max-height:100%; float: none">' . PHP_EOL;
+			echo '	<a style="color: #222222" href="' . $file_url . '">' . PHP_EOL;
+			echo '		<p><i class="' . utils_getFileIconClass($file->getName()) . ' fa-10x"></i></p>' . PHP_EOL;
+			echo '		<p>' . $file->getName() . '</p>' . PHP_EOL;
+			echo '	</a>' . PHP_EOL;
+			echo '</div>' . PHP_EOL;
 		}
 		?>
 		</div>
