@@ -236,13 +236,8 @@ Each new text requiere a new translation. Think before adding new text.
 New design, more user friendly will be welcome.
 
 # TODO
-* Add version number
-* Remove offline viewer
 * Add jocker `*` and `**/*` to exlude item option
-* Config: thumbnail directory
-* compression: avoid DOS
-* Disabling user authentfication : only for the admin
-* Chek user root directory
-* Toolstrips on setings
+* compression: avoid DOS attack
+* Toolstrips on settings
 * User password expiration
 * Unit Tests
