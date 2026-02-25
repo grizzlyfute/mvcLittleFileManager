@@ -13,7 +13,7 @@ class Authenticator
   public static function loadUsers(): void
   {
     self::$users = array();
-    if (is_readable (APPDATAPATH . 'users.json'))
+    if (is_readable (APPDATAPATH . DIRECTORY_SEPARATOR . 'users.json'))
     {
       $users_json = json_decode(file_get_contents(APPDATAPATH . DIRECTORY_SEPARATOR . 'users.json'), true);
     }

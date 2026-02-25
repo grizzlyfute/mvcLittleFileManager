@@ -1,7 +1,7 @@
 <?php
 
 // The path where app setting is located
-define('APPDATAPATH',  realpath('/home/user' . DIRECTORY_SEPARATOR . 'mvcLittleFileManager/config') . DIRECTORY_SEPARATOR);
+define('APPDATAPATH',  realpath('/home/user' . DIRECTORY_SEPARATOR . 'mvcLittleFileManager/config'));
 if (APPDATAPATH == '') die ('Path to config data directory is not defined. Set it in ' . __FILE__);
 $CONFIG = array();
 
@@ -9,7 +9,7 @@ $CONFIG = array();
 $CONFIG_DEFAULT = array
 (
   'apptitle' => 'App title',
-  'rootdirectory' => APPDATAPATH . 'data',
+  'rootdirectory' => APPDATAPATH . DIRECTORY_SEPARATOR . 'data',
   'timezone' => 'Etc/UTC',
   'debug' => false, // set to false to not reporting error
   'dateformat' => 'Y-m-d h:i:s',
@@ -30,7 +30,7 @@ function load_config()
 {
   global $CONFIG, $CONFIG_DEFAULT;
   $confTemp = array();
-  if (file_exists(APPDATAPATH . 'config.json'))
+  if (file_exists(APPDATAPATH . DIRECTORY_SEPARATOR . 'config.json'))
   {
     $confTemp = json_decode(file_get_contents(APPDATAPATH . DIRECTORY_SEPARATOR . 'config.json'), true);
     if ($confTemp === null) $confTemp = array();
